@@ -2,7 +2,9 @@ const express = require('express');
 const app = express();
 const { render } = require('ejs');
 const mongoose = require('mongoose');
+const DB_AUTH = require('./DB_auth.json');
 const accountRoutes = require('./routes/accountRoutes');
+const eventRoutes = require('./routes/eventRoutes');
 
 // view engine (later changed to use REACT/ANGULAR)
 app.set('view engine', 'ejs');
@@ -11,7 +13,7 @@ app.set('view engine', 'ejs');
 const PORT = 3000;
 
 // connect to DB
-const DB_URI = 'mongodb+srv://admin1:<password>@cluster0.yp0on.mongodb.net/<dbname>?retryWrites=true&w=majority';
+const DB_URI = `mongodb+srv://${DB_AUTH.username}:${DB_AUTH.password}@cluster0.yp0on.mongodb.net/${DB_AUTH.dbname}?retryWrites=true&w=majority`;
 mongoose
   .connect(DB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then((result) => {
@@ -32,3 +34,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // account routes
 app.use('/accounts', accountRoutes);
+
+// event routes
+app.use('/events', eventRoutes);

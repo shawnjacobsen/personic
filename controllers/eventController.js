@@ -1,13 +1,13 @@
-const Account = require('../models/account');
+const Event = require('../models/event');
 
-const account_details = (req, res) => {
+const event_details = (req, res) => {
   const id = req.params.id;
-  Account.findById(id).then((result) => {
+  Event.findById(id).then((result) => {
     res.send(JSON.stringify(result));
   });
 };
 
-const account_post = (req, res) => {
+const event_post = (req, res) => {
   console.log(req.body);
   let data = JSON.parse(JSON.stringify(req.body));
   const position = {
@@ -22,28 +22,28 @@ const account_post = (req, res) => {
   data.position = position;
 
   console.log(data);
-  const account = new Account(data);
-  console.log(account);
+  const event = new Event(data);
+  console.log(event);
 
-  account
+  event
     .save()
     .then((result) => {
-      res.redirect(`/accounts/${account._id}`);
+      res.redirect(`/events/${event._id}`);
     })
     .catch((err) => {
       console.log(err);
     });
 };
-const account_delete = (req, res) => {
+const event_delete = (req, res) => {
   const id = req.params.id;
 
-  Account.findByIdAndDelete(id).then((result) => {
-    res.redirect(`/accounts/`);
+  Event.findByIdAndDelete(id).then((result) => {
+    res.redirect(`/events/`);
   });
 };
 
 module.exports = {
-  account_details,
-  account_post,
-  account_delete,
+  event_details,
+  event_post,
+  event_delete,
 };
