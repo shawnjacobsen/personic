@@ -8,7 +8,6 @@ const account_details = (req, res) => {
 };
 
 const account_post = (req, res) => {
-  console.log(req.body);
   let data = JSON.parse(JSON.stringify(req.body));
   const position = {
     company: data.company,
@@ -21,9 +20,7 @@ const account_post = (req, res) => {
   delete data.title;
   data.position = position;
 
-  console.log(data);
   const account = new Account(data);
-  console.log(account);
 
   account
     .save()

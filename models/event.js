@@ -3,12 +3,8 @@ const Schema = mongoose.Schema;
 
 const eventSchema = new Schema(
   {
-    DeckID: {
+    deckID: {
       type: Number,
-      required: true,
-    },
-    lastname: {
-      type: String,
       required: true,
     },
     hosts: {
@@ -16,7 +12,7 @@ const eventSchema = new Schema(
       required: true,
     },
     date: {
-      type: String,
+      type: Date,
       required: true,
     },
     description: {
@@ -24,7 +20,7 @@ const eventSchema = new Schema(
       required: false,
     },
     hostCompanyID: {
-      type: String,
+      type: Number,
       required: false,
     },
   },
