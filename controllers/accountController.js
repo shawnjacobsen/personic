@@ -1,36 +1,18 @@
-const Account = require('../models/account');
+const connection = require('../config/database');
+const Account = connection.models.Account;
 
 const account_details = (req, res) => {
+  console.log('account_details route');
   const id = req.params.id;
-  Account.findById(id).then((result) => {
-    res.send(JSON.stringify(result));
-  });
-};
-
-const account_post = (req, res) => {
-  let data = JSON.parse(JSON.stringify(req.body));
-  const position = {
-    company: data.company,
-    companyID: data.companyID,
-    title: data.title,
-  };
-
-  delete data.company;
-  delete data.companyID;
-  delete data.title;
-  data.position = position;
-
-  const account = new Account(data);
-
-  account
-    .save()
+  Account.findById(id)
     .then((result) => {
-      res.redirect(`/accounts/${account._id}`);
+      console.log('result:');
+      console.log(result);
+      res.send(JSON.stringify(result));
     })
-    .catch((err) => {
-      console.log(err);
-    });
+    .catch((err) => console.log(err));
 };
+
 const account_delete = (req, res) => {
   const id = req.params.id;
 
@@ -41,6 +23,5 @@ const account_delete = (req, res) => {
 
 module.exports = {
   account_details,
-  account_post,
   account_delete,
 };

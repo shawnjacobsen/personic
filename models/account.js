@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const connection = require('../config/database');
 const Schema = mongoose.Schema;
 
 const accountSchema = new Schema(
@@ -23,10 +24,22 @@ const accountSchema = new Schema(
       type: String,
       required: false,
     },
+    username: {
+      type: String,
+      required: true,
+    },
+    hash: {
+      type: String,
+      required: true,
+    },
+    salt: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
 
-const Account = mongoose.model('account', accountSchema);
+// const Account = connection.model('account', accountSchema);
 
-module.exports = Account;
+module.exports = accountSchema;

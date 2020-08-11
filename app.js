@@ -1,39 +1,67 @@
 const express = require('express');
 const app = express();
+const session = require('express-session');
+let passport = require('passport');
+let crypto = require('crypto');
 const { render } = require('ejs');
-const mongoose = require('mongoose');
-const DB_AUTH = require('./DB_auth.json');
-const accountRoutes = require('./routes/accountRoutes');
-const eventRoutes = require('./routes/eventRoutes');
+const MongoStore = require('connect-mongo')(session);
+const connection = require('./config/database');
+require('dotenv').config();
 
-// view engine (later changed to use REACT/ANGULAR)
+// view engine (later changed to use REACT)
 app.set('view engine', 'ejs');
 
 // PORT
 const PORT = 3000;
 
-// connect to DB
-const DB_URI = `mongodb+srv://${DB_AUTH.username}:${DB_AUTH.password}@cluster0.yp0on.mongodb.net/${DB_AUTH.dbname}?retryWrites=true&w=majority`;
-mongoose
-  .connect(DB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then((result) => {
-    console.log('connected to MongoDB');
-    app.listen(PORT, () => {
-      console.log(`Listening on port ${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+/* ----------   SESSION SETUP   ---------- */
 
-// middleware and static files --------------
+const sessionStore = new MongoStore({ mongooseConnection: connection, collection: 'sessions' });
+
+app.use(
+  session({
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: true,
+    store: sessionStore,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, // Equals 1 day (1 day * 24 hr/1 day * 60 min/1 hr * 60 sec/1 min * 1000 ms / 1 sec)
+    },
+  })
+);
+
+/* ----------   MIDDLEWARE & STATICS   ---------- */
+
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-// routes -------------
+/* ----------   PASSPORT AUTH   ---------- */
+require('./config/passport');
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use((req, res, next) => {
+  console.log(req.session);
+  next();
+});
+
+/* ----------   ROUTES   ---------- */
+const indexRoutes = require('./routes/indexRoutes');
+const accountRoutes = require('./routes/accountRoutes');
+const eventRoutes = require('./routes/eventRoutes');
+
+// account routes
+app.use('/', indexRoutes);
 
 // account routes
 app.use('/accounts', accountRoutes);
 
 // event routes
 app.use('/events', eventRoutes);
+
+// express listen on specified PORT
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}...`);
+});
