@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const connection = require('../config/database');
 const Schema = mongoose.Schema;
 
 const accountSchema = new Schema(
@@ -39,7 +38,5 @@ const accountSchema = new Schema(
   },
   { timestamps: true }
 );
-
-// const Account = connection.model('account', accountSchema);
 
 module.exports = accountSchema;

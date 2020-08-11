@@ -50,16 +50,11 @@ app.use((req, res, next) => {
 /* ----------   ROUTES   ---------- */
 const indexRoutes = require('./routes/indexRoutes');
 const accountRoutes = require('./routes/accountRoutes');
-const eventRoutes = require('./routes/eventRoutes');
+const homeRoutes = require('./routes/homeRoutes');
 
-// account routes
 app.use('/', indexRoutes);
-
-// account routes
 app.use('/accounts', accountRoutes);
-
-// event routes
-app.use('/events', eventRoutes);
+app.use('/home', homeRoutes);
 
 // express listen on specified PORT
 app.listen(PORT, () => {
